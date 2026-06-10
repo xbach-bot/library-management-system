@@ -21,4 +21,4 @@ COPY --from=build /app/target/library-management-*.jar app.jar
 EXPOSE 8080
 
 # Chạy ứng dụng
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
