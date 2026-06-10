@@ -35,7 +35,7 @@ const MainLayout = () => {
   // Định nghĩa các phần tử menu dựa trên vai trò của người dùng
   const getMenuItems = () => {
     const isAdminOrLibrarian = user && (user.role === 'ADMIN' || user.role === 'LIBRARIAN');
-    
+
     const items = [];
 
     if (isAdminOrLibrarian) {
@@ -161,7 +161,7 @@ const MainLayout = () => {
           <Outlet />
         </Content>
         <Footer style={{ textAlign: 'center', color: 'var(--text-secondary)', background: 'transparent', padding: '16px 0' }}>
-          Library Management System ©{new Date().getFullYear()} - Thiết kế bởi Senior Developer
+          Library Management System ©{new Date().getFullYear()} - 2026
         </Footer>
       </Layout>
     </Layout>
