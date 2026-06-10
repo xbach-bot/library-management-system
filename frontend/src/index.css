@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #0f172a;
+  background-color: #f8fafc;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* SaaS Light Design tokens */
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-layout: #f8fafc;
+  --surface-card: #ffffff;
+  --border-color: #e2e8f0;
+  --text-title: #0f172a;
+  --text-paragraph: #475569;
+  --text-secondary: #64748b;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-layout);
+  color: var(--text-paragraph);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Micro-animations */
+.hover-scale {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Glass card but light and subtle */
+.glass-card {
+  background: var(--surface-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  color: var(--text-title) !important;
+}
+
+/* SaaS Layout styling */
+.ant-layout {
+  background: var(--bg-layout) !important;
+}
+
+.ant-layout-sider {
+  background: #0f172a !important; /* Premium dark sider for depth contrast */
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 2px 0 8px 0 rgba(0, 0, 0, 0.05);
+}
+
+.ant-layout-sider .ant-menu-item {
+  color: #94a3b8 !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+  border-radius: 8px !important;
+}
+
+.ant-layout-sider .ant-menu-item-selected {
+  background-color: rgba(37, 99, 235, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.ant-layout-sider .ant-menu-item-selected .anticon {
+  color: #3b82f6 !important;
+}
+
+.ant-layout-sider .ant-menu-item:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.ant-layout-header {
+  background: var(--surface-card) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  padding: 0 24px !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* Global table overrides for SaaS dashboard feel */
+.ant-table-wrapper {
+  background: var(--surface-card) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.ant-table {
+  background: transparent !important;
+}
+
+.ant-table-thead > tr > th {
+  background: #f8fafc !important;
+  color: var(--text-secondary) !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-paragraph) !important;
+}
+
+.ant-table-row:hover > td {
+  background: #f8fafc !important;
+}
+
+/* Clean forms & inputs */
+.ant-input, .ant-input-password, .ant-select-selector, .ant-input-number, .ant-picker {
+  border-color: #cbd5e1 !important;
+  border-radius: 8px !important;
+}
+
+.ant-input:hover, .ant-select-selector:hover, .ant-input-number:hover {
+  border-color: #94a3b8 !important;
+}
+
+.ant-input:focus, .ant-input-focused, .ant-select-selector:focus, .ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+}
+
+.ant-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+/* Custom shadow cards */
+.saas-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
