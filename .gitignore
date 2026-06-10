@@ -1,0 +1,31 @@
+# Maven
+backend/target/
+backend/.mvn/
+backend/*.jar
+backend/*.war
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.iml
+*.iws
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# OS files
+Thumbs.db

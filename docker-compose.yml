@@ -1,0 +1,58 @@
+services:
+  # 1. Cơ sở dữ liệu MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: library_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # Tự động nạp cấu hình và dữ liệu mẫu khi MySQL khởi tạo lần đầu
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pready" ]
+      timeout: 10s
+      retries: 5
+      interval: 10s
+
+  # 2. Backend API (Spring Boot)
+  backend-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_NAME: library_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      # Cấu hình JWT cho container
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/library_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  # 3. Frontend UI (React + Nginx)
+  frontend-ui:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-ui
+    restart: always
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:8080/api/v1
+    depends_on:
+      - backend-api
+
+volumes:
+  mysql-data:
