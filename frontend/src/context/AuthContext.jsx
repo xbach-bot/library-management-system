@@ -8,14 +8,34 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Khôi phục phiên làm việc từ localStorage
-    const savedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    
-    if (savedUser && token) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    const initAuth = async () => {
+      const savedUser = localStorage.getItem('user');
+      const token = localStorage.getItem('token');
+      
+      if (savedUser && token) {
+        // Tạm thời khôi phục từ localStorage để tránh chớp nháy UI
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        
+        try {
+          // Lấy thông tin cá nhân mới nhất để đồng bộ và cập nhật lỗi font chữ (nếu có)
+          const response = await apiClient.get('/users/profile');
+          const freshUser = {
+            id: response.data.id,
+            email: response.data.email,
+            fullName: response.data.fullName,
+            role: response.data.role
+          };
+          localStorage.setItem('user', JSON.stringify(freshUser));
+          setUser(freshUser);
+        } catch (error) {
+          console.error("Không thể cập nhật thông tin cá nhân mới nhất:", error);
+        }
+      }
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
