@@ -225,7 +225,7 @@ const Books = () => {
       width: 100,
       render: (qty) => {
         const color = qty > 0 ? 'green' : 'red';
-        return <Badge count={qty} style={{ backgroundColor: color === 'green' ? 'var(--success-color)' : 'var(--danger-color)' }} />;
+        return <Badge count={qty} showZero style={{ backgroundColor: color === 'green' ? 'var(--success-color)' : 'var(--danger-color)' }} />;
       }
     },
     ...(isAdminOrLibrarian ? [{
@@ -345,7 +345,7 @@ const Books = () => {
                   </div>
                   <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-                      Còn lại: <Badge count={book.availableQuantity} style={{ backgroundColor: book.availableQuantity > 0 ? 'var(--success-color)' : 'var(--danger-color)' }} />
+                      Còn lại: <Badge count={book.availableQuantity} showZero style={{ backgroundColor: book.availableQuantity > 0 ? 'var(--success-color)' : 'var(--danger-color)' }} />
                     </span>
                   </div>
                 </Card>

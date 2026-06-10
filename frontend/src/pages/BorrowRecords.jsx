@@ -195,8 +195,8 @@ const BorrowRecords = () => {
       title: 'Hạn trả',
       dataIndex: 'dueDate',
       key: 'dueDate',
-      render: (date) => {
-        const isOverdue = new Date(date) < new Date() && records.find(r => r.dueDate === date)?.status !== 'RETURNED';
+      render: (date, record) => {
+        const isOverdue = new Date(date) < new Date() && record.status !== 'RETURNED';
         return <span style={{ color: isOverdue ? 'var(--danger-color)' : 'var(--text-paragraph)', fontWeight: isOverdue ? 600 : 'normal' }}>{new Date(date).toLocaleDateString()}</span>;
       }
     },

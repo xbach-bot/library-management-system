@@ -207,7 +207,7 @@ const Users = () => {
       key: 'books',
       render: (books) => (
         <ul style={{ paddingLeft: 16, margin: 0 }}>
-          {books.map(b => <li key={b.id}>{b.title}</li>)}
+          {books?.map(b => <li key={b.id}>{b.title}</li>)}
         </ul>
       )
     },
