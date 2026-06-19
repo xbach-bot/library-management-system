@@ -4,6 +4,7 @@ import com.library.dto.AuthRequest;
 import com.library.dto.AuthResponse;
 import com.library.dto.RegisterRequest;
 import com.library.entity.User;
+import com.library.entity.Role;
 import com.library.exception.BadRequestException;
 import com.library.repository.UserRepository;
 import com.library.security.JwtUtils;
@@ -56,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.READER)
                 .build();
 
         userRepository.save(user);

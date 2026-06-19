@@ -17,7 +17,7 @@ const Register = () => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      await register(values.fullName, values.email, values.password, values.role);
+      await register(values.fullName, values.email, values.password, 'READER');
       message.success('Đăng ký tài khoản thành công! Hãy đăng nhập.');
       navigate('/login');
     } catch (err) {
@@ -91,17 +91,7 @@ const Register = () => {
               />
             </Form.Item>
 
-            <Form.Item
-              name="role"
-              label={<span style={{ color: 'var(--text-paragraph)', fontWeight: 500 }}>Vai trò tài khoản</span>}
-              rules={[{ required: true }]}
-            >
-              <Select placeholder="Chọn vai trò" style={{ borderRadius: 8 }}>
-                <Option value="READER">Độc giả (Reader)</Option>
-                <Option value="LIBRARIAN">Thủ thư (Librarian)</Option>
-                <Option value="ADMIN">Quản trị viên (Admin)</Option>
-              </Select>
-            </Form.Item>
+
 
             <Form.Item style={{ marginBottom: 8 }}>
               <Button type="primary" htmlType="submit" loading={loading} block style={{ borderRadius: 8, height: 45, fontWeight: 600 }}>
