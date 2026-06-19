@@ -45,7 +45,7 @@ jobs:
           cd frontend
           npm run build
         env:
-          VITE_API_URL: https://your-backend-api-production.com/api/v1 # Update this when you have a backend deployed
+          VITE_API_URL: https://library-management-system-306e.onrender.com/api/v1
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
