@@ -1,3 +1,4 @@
+// Trigger redeployment after setting Pages source to GitHub Actions
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
