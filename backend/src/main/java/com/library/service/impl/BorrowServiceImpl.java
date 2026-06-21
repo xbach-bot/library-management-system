@@ -236,12 +236,25 @@ public class BorrowServiceImpl implements BorrowService {
         record.setExtensionRequested(true);
         BorrowRecord savedRecord = borrowRecordRepository.save(record);
 
+        LocalDateTime now = LocalDateTime.now();
+
         notificationRepository.save(Notification.builder()
                 .user(record.getUser())
                 .title("Yêu cầu gia hạn đang chờ duyệt")
                 .content("Yêu cầu gia hạn thêm 7 ngày cho phiếu mượn #" + recordId + " đã được gửi và đang chờ thủ thư phê duyệt.")
-                .createdAt(LocalDateTime.now())
+                .createdAt(now)
                 .build());
+
+        // Gửi thông báo cho toàn bộ Admin và Thủ thư
+        java.util.List<User> staff = userRepository.findByRoleIn(java.util.List.of(Role.ADMIN, Role.LIBRARIAN));
+        for (User member : staff) {
+            notificationRepository.save(Notification.builder()
+                    .user(member)
+                    .title("Yêu cầu gia hạn mới")
+                    .content("Độc giả " + record.getUser().getFullName() + " đã yêu cầu gia hạn thêm 7 ngày cho phiếu mượn #" + recordId)
+                    .createdAt(now)
+                    .build());
+        }
 
         return convertToDTO(savedRecord);
     }
