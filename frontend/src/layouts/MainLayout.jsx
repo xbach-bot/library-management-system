@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaSwatchbook } from 'react-icons/fa6';
 import { Layout, Menu, Button, Avatar, Dropdown, Space, Typography, Tag } from 'antd';
 import {
   MenuFoldOutlined,
@@ -118,8 +119,15 @@ const MainLayout = () => {
     <Layout style={{ minHeight: '100vh' }}>
       <Sider trigger={null} collapsible collapsed={collapsed} breakpoint="lg" onCollapse={(value) => setCollapsed(value)}>
         <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <Title level={4} style={{ color: '#fff', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {collapsed ? 'LMS' : '📚 Thư Viện'}
+          <Title level={4} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {collapsed ? (
+              <FaSwatchbook style={{ fontSize: '20px', color: '#3b82f6' }} />
+            ) : (
+              <Space size="small">
+                <FaSwatchbook style={{ color: '#3b82f6', fontSize: '20px' }} />
+                <span>Thư Viện</span>
+              </Space>
+            )}
           </Title>
         </div>
         <Menu
