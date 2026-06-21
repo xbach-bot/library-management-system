@@ -83,4 +83,30 @@ public class BorrowController {
         Page<BorrowRecordDTO> userRecords = borrowService.getUserBorrowRecords(userId, page, size, sortBy, sortDir);
         return ResponseEntity.ok(userRecords);
     }
+
+    // Độc giả gửi yêu cầu gia hạn mượn sách cá nhân
+    @PostMapping("/{id}/request-extension")
+    public ResponseEntity<BorrowRecordDTO> requestExtension(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        
+        BorrowRecordDTO updatedRecord = borrowService.requestExtension(id, userDetails.getUsername());
+        return ResponseEntity.ok(updatedRecord);
+    }
+
+    // Thủ thư/Admin duyệt gia hạn
+    @PostMapping("/{id}/approve-extension")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+    public ResponseEntity<BorrowRecordDTO> approveExtension(@PathVariable Long id) {
+        BorrowRecordDTO updatedRecord = borrowService.approveExtension(id);
+        return ResponseEntity.ok(updatedRecord);
+    }
+
+    // Thủ thư/Admin từ chối gia hạn
+    @PostMapping("/{id}/reject-extension")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+    public ResponseEntity<BorrowRecordDTO> rejectExtension(@PathVariable Long id) {
+        BorrowRecordDTO updatedRecord = borrowService.rejectExtension(id);
+        return ResponseEntity.ok(updatedRecord);
+    }
 }

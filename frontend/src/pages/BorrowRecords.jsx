@@ -123,6 +123,39 @@ const BorrowRecords = () => {
     }
   };
 
+  // Yêu cầu gia hạn (Độc giả)
+  const handleRequestExtension = async (recordId) => {
+    try {
+      await apiClient.post(`/borrow/${recordId}/request-extension`);
+      message.success('Đã gửi yêu cầu gia hạn sách thành công! Đang chờ thủ thư phê duyệt.');
+      fetchRecords();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Yêu cầu gia hạn thất bại!');
+    }
+  };
+
+  // Phê duyệt gia hạn (Thủ thư/Admin)
+  const handleApproveExtension = async (recordId) => {
+    try {
+      await apiClient.post(`/borrow/${recordId}/approve-extension`);
+      message.success('Đã duyệt gia hạn phiếu mượn thêm 7 ngày thành công!');
+      fetchRecords();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Thao tác thất bại!');
+    }
+  };
+
+  // Từ chối gia hạn (Thủ thư/Admin)
+  const handleRejectExtension = async (recordId) => {
+    try {
+      await apiClient.post(`/borrow/${recordId}/reject-extension`);
+      message.success('Đã từ chối yêu cầu gia hạn sách.');
+      fetchRecords();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Thao tác thất bại!');
+    }
+  };
+
   // Tạo phiếu mượn mới
   const handleCreateRecord = async (values) => {
     setSubmitLoading(true);
@@ -138,17 +171,29 @@ const BorrowRecords = () => {
     }
   };
 
-  const getStatusTag = (status) => {
+  const getStatusTag = (record) => {
+    const status = record.status;
+    let tag = null;
     switch (status) {
       case 'BORROWED':
-        return <Tag color="blue" style={{ borderRadius: 4 }}>Đang mượn</Tag>;
+        tag = <Tag color="blue" style={{ borderRadius: 4 }}>Đang mượn</Tag>;
+        break;
       case 'RETURNED':
-        return <Tag color="green" style={{ borderRadius: 4 }}>Đã trả</Tag>;
+        tag = <Tag color="green" style={{ borderRadius: 4 }}>Đã trả</Tag>;
+        break;
       case 'OVERDUE':
-        return <Tag color="red" style={{ borderRadius: 4 }}>Quá hạn</Tag>;
+        tag = <Tag color="red" style={{ borderRadius: 4 }}>Quá hạn</Tag>;
+        break;
       default:
-        return <Tag style={{ borderRadius: 4 }}>{status}</Tag>;
+        tag = <Tag style={{ borderRadius: 4 }}>{status}</Tag>;
     }
+    return (
+      <Space direction="vertical" size={2} style={{ display: 'flex' }}>
+        {tag}
+        {record.extensionRequested && <Tag color="warning" style={{ borderRadius: 4 }}>Chờ gia hạn</Tag>}
+        {record.extensionCount >= 1 && <Tag color="purple" style={{ borderRadius: 4 }}>Đã gia hạn (+7d)</Tag>}
+      </Space>
+    );
   };
 
   const columns = [
@@ -210,28 +255,75 @@ const BorrowRecords = () => {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => getStatusTag(status)
+      render: (_, record) => getStatusTag(record)
     },
     ...(isAdminOrLibrarian ? [{
       title: 'Hành động',
       key: 'action',
-      width: 120,
+      width: 260,
       render: (_, record) => (
-        record.status !== 'RETURNED' ? (
-          <Button
-            icon={<CheckCircleOutlined />}
-            onClick={() => handleReturnBook(record.id)}
-            style={{ 
-              borderRadius: 6,
-              backgroundColor: 'var(--success-color)',
-              borderColor: 'var(--success-color)',
-              color: '#ffffff'
-            }}
-          >
-            Trả sách
-          </Button>
-        ) : null
+        <Space size="middle">
+          {record.status !== 'RETURNED' && (
+            <Button
+              icon={<CheckCircleOutlined />}
+              onClick={() => handleReturnBook(record.id)}
+              style={{ 
+                borderRadius: 6,
+                backgroundColor: 'var(--success-color)',
+                borderColor: 'var(--success-color)',
+                color: '#ffffff'
+              }}
+            >
+              Trả sách
+            </Button>
+          )}
+          {record.extensionRequested && (
+            <Space size="small">
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleApproveExtension(record.id)}
+                style={{ borderRadius: 6, fontSize: 12 }}
+              >
+                Duyệt gia hạn
+              </Button>
+              <Button
+                type="primary"
+                danger
+                size="small"
+                onClick={() => handleRejectExtension(record.id)}
+                style={{ borderRadius: 6, fontSize: 12 }}
+              >
+                Từ chối
+              </Button>
+            </Space>
+          )}
+        </Space>
       )
+    }] : []),
+    ...(!isAdminOrLibrarian ? [{
+      title: 'Yêu cầu gia hạn',
+      key: 'request_extension',
+      width: 150,
+      render: (_, record) => {
+        if (record.status !== 'BORROWED') return '-';
+        if (record.extensionRequested) {
+          return <Tag color="warning">Chờ duyệt...</Tag>;
+        }
+        if (record.extensionCount >= 1) {
+          return <Tag color="default">Đã gia hạn (1/1)</Tag>;
+        }
+        return (
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => handleRequestExtension(record.id)}
+            style={{ borderRadius: 6, fontSize: 12 }}
+          >
+            Xin gia hạn
+          </Button>
+        );
+      }
     }] : []),
   ];
 

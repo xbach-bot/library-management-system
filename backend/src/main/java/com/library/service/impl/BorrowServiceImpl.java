@@ -206,6 +206,98 @@ public class BorrowServiceImpl implements BorrowService {
                 .returnDate(record.getReturnDate())
                 .status(record.getStatus().name())
                 .books(bookDTOs)
+                .extensionRequested(record.isExtensionRequested())
+                .extensionCount(record.getExtensionCount())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public BorrowRecordDTO requestExtension(Long recordId, String userEmail) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phiếu mượn với ID: " + recordId));
+
+        if (userEmail != null && !record.getUser().getEmail().equals(userEmail)) {
+            throw new BadRequestException("Bạn không có quyền yêu cầu gia hạn cho phiếu mượn của người khác!");
+        }
+
+        if (record.getStatus() != BorrowStatus.BORROWED) {
+            throw new BadRequestException("Chỉ có thể gia hạn sách cho phiếu đang mượn!");
+        }
+
+        if (record.getExtensionCount() >= 1) {
+            throw new BadRequestException("Sách này đã được gia hạn trước đó! Chỉ được phép gia hạn tối đa 1 lần.");
+        }
+
+        if (record.isExtensionRequested()) {
+            throw new BadRequestException("Yêu cầu gia hạn cho phiếu mượn này đang chờ duyệt!");
+        }
+
+        record.setExtensionRequested(true);
+        BorrowRecord savedRecord = borrowRecordRepository.save(record);
+
+        notificationRepository.save(Notification.builder()
+                .user(record.getUser())
+                .title("Yêu cầu gia hạn đang chờ duyệt")
+                .content("Yêu cầu gia hạn thêm 7 ngày cho phiếu mượn #" + recordId + " đã được gửi và đang chờ thủ thư phê duyệt.")
+                .createdAt(LocalDateTime.now())
+                .build());
+
+        return convertToDTO(savedRecord);
+    }
+
+    @Override
+    @Transactional
+    public BorrowRecordDTO approveExtension(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phiếu mượn với ID: " + recordId));
+
+        if (!record.isExtensionRequested()) {
+            throw new BadRequestException("Không tìm thấy yêu cầu gia hạn cho phiếu mượn này!");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        record.setDueDate(record.getDueDate().plusDays(7));
+        record.setExtensionRequested(false);
+        record.setExtensionCount(record.getExtensionCount() + 1);
+
+        // Nếu trạng thái đang là quá hạn nhưng được gia hạn thêm mà hạn mới lớn hơn hiện tại, chuyển về đang mượn
+        if (record.getStatus() == BorrowStatus.OVERDUE && record.getDueDate().isAfter(now)) {
+            record.setStatus(BorrowStatus.BORROWED);
+        }
+
+        BorrowRecord savedRecord = borrowRecordRepository.save(record);
+
+        notificationRepository.save(Notification.builder()
+                .user(record.getUser())
+                .title("Gia hạn mượn sách thành công")
+                .content("Yêu cầu gia hạn cho phiếu mượn #" + recordId + " đã được duyệt. Hạn trả mới của bạn là: " + savedRecord.getDueDate().toLocalDate())
+                .createdAt(now)
+                .build());
+
+        return convertToDTO(savedRecord);
+    }
+
+    @Override
+    @Transactional
+    public BorrowRecordDTO rejectExtension(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phiếu mượn với ID: " + recordId));
+
+        if (!record.isExtensionRequested()) {
+            throw new BadRequestException("Không tìm thấy yêu cầu gia hạn cho phiếu mượn này!");
+        }
+
+        record.setExtensionRequested(false);
+        BorrowRecord savedRecord = borrowRecordRepository.save(record);
+
+        notificationRepository.save(Notification.builder()
+                .user(record.getUser())
+                .title("Yêu cầu gia hạn bị từ chối")
+                .content("Yêu cầu gia hạn cho phiếu mượn #" + recordId + " của bạn đã bị từ chối bởi thủ thư.")
+                .createdAt(LocalDateTime.now())
+                .build());
+
+        return convertToDTO(savedRecord);
     }
 }

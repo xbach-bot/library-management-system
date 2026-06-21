@@ -40,4 +40,12 @@ public class BorrowRecord {
     @Builder.Default
     @ToString.Exclude
     private List<BorrowDetail> borrowDetails = new ArrayList<>();
+
+    @Column(name = "extension_requested", nullable = false)
+    @Builder.Default
+    private boolean extensionRequested = false;
+
+    @Column(name = "extension_count", nullable = false)
+    @Builder.Default
+    private int extensionCount = 0;
 }

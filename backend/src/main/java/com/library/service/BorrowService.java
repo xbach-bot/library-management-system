@@ -10,4 +10,7 @@ public interface BorrowService {
     Page<BorrowRecordDTO> getBorrowRecords(String keyword, String status, int page, int size, String sortBy, String sortDir);
     Page<BorrowRecordDTO> getUserBorrowRecords(Long userId, int page, int size, String sortBy, String sortDir);
     void checkAndSetOverdueRecords();
+    BorrowRecordDTO requestExtension(Long recordId, String userEmail);
+    BorrowRecordDTO approveExtension(Long recordId);
+    BorrowRecordDTO rejectExtension(Long recordId);
 }

@@ -22,4 +22,6 @@ public class BorrowRecordDTO {
     private LocalDateTime returnDate;
     private String status;
     private List<BookDTO> books;
+    private boolean extensionRequested;
+    private int extensionCount;
 }
