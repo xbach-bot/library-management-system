@@ -35,6 +35,15 @@ const Books = () => {
   const [coverBase64, setCoverBase64] = useState('');
   const [fileList, setFileList] = useState([]);
 
+  // State xem chi tiết sách
+  const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  const handleViewDetail = (book) => {
+    setSelectedBookForDetail(book);
+    setIsDetailModalOpen(true);
+  };
+
   // Lấy danh sách thể loại sách để điền vào Select dropdown
   const fetchCategories = useCallback(async () => {
     try {
@@ -190,8 +199,8 @@ const Books = () => {
       key: 'title',
       sorter: true,
       render: (text, record) => (
-        <div>
-          <span style={{ fontWeight: 600, color: 'var(--text-title)' }}>{text}</span>
+        <div style={{ cursor: 'pointer' }} onClick={() => handleViewDetail(record)} title="Xem chi tiết sách">
+          <span style={{ fontWeight: 600, color: 'var(--primary-color)' }}>{text}</span>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>ISBN: {record.isbn}</div>
         </div>
       )
@@ -323,6 +332,7 @@ const Books = () => {
                 <Card
                   hoverable
                   className="hover-scale glass-card"
+                  onClick={() => handleViewDetail(book)}
                   cover={
                     book.coverImage ? (
                       <img alt={book.title} src={book.coverImage} style={{ height: 260, objectFit: 'cover', borderRadius: '12px 12px 0 0' }} />
@@ -471,6 +481,71 @@ const Books = () => {
             </Space>
           </Form.Item>
         </Form>
+      </Modal>
+      {/* Modal Xem Chi Tiết Sách */}
+      <Modal
+        title="Chi Tiết Sách Thư Viện"
+        open={isDetailModalOpen}
+        onCancel={() => setIsDetailModalOpen(false)}
+        footer={[
+          <Button key="close" onClick={() => setIsDetailModalOpen(false)} style={{ borderRadius: 6 }}>
+            Đóng
+          </Button>
+        ]}
+        destroyOnClose
+        width={600}
+      >
+        {selectedBookForDetail && (
+          <Row gutter={24} style={{ marginTop: 16 }}>
+            <Col xs={24} sm={8} style={{ textAlign: 'center', marginBottom: 16 }}>
+              {selectedBookForDetail.coverImage ? (
+                <Image
+                  src={selectedBookForDetail.coverImage}
+                  alt={selectedBookForDetail.title}
+                  style={{ width: '100%', maxWidth: 150, objectFit: 'cover', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+              ) : (
+                <div style={{ width: '100%', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9', borderRadius: 8 }}>
+                  <BookOutlined style={{ fontSize: 48, color: 'var(--text-secondary)' }} />
+                </div>
+              )}
+            </Col>
+            <Col xs={24} sm={16}>
+              <Title level={4} style={{ margin: '0 0 8px 0', color: 'var(--text-title)' }}>
+                {selectedBookForDetail.title}
+              </Title>
+              <Paragraph style={{ marginBottom: 16 }}>
+                <Tag color="blue">{selectedBookForDetail.categoryName}</Tag>
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>ISBN: {selectedBookForDetail.isbn}</span>
+              </Paragraph>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', rowGap: '8px', fontSize: 14, color: 'var(--text-paragraph)' }}>
+                <strong>Tác giả:</strong>
+                <span>{selectedBookForDetail.author}</span>
+                
+                <strong>Nhà xuất bản:</strong>
+                <span>{selectedBookForDetail.publisher}</span>
+                
+                <strong>Tổng số sách:</strong>
+                <span>{selectedBookForDetail.quantity} cuốn</span>
+                
+                <strong>Sách sẵn có:</strong>
+                <span>
+                  <Tag color={selectedBookForDetail.availableQuantity > 0 ? 'green' : 'red'} style={{ margin: 0 }}>
+                    {selectedBookForDetail.availableQuantity} cuốn khả dụng
+                  </Tag>
+                </span>
+              </div>
+              
+              <div style={{ marginTop: 16, borderTop: '1px solid var(--border-color)', paddingTop: 16 }}>
+                <strong style={{ display: 'block', marginBottom: 8 }}>Mô tả sách:</strong>
+                <Paragraph style={{ color: 'var(--text-secondary)', whiteSpace: 'pre-line' }}>
+                  {selectedBookForDetail.description || 'Không có mô tả cho cuốn sách này.'}
+                </Paragraph>
+              </div>
+            </Col>
+          </Row>
+        )}
       </Modal>
     </div>
   );
