@@ -317,9 +317,12 @@ const BorrowRecords = () => {
               showSearch
               placeholder="Nhập tên hoặc email độc giả"
               optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+              filterOption={(input, option) => {
+                const label = Array.isArray(option.children)
+                  ? option.children.join('')
+                  : option.children || '';
+                return label.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
               style={{ borderRadius: 6 }}
             >
               {readers.map(reader => (
@@ -337,7 +340,15 @@ const BorrowRecords = () => {
           >
             <Select
               mode="multiple"
+              showSearch
               placeholder="Chọn sách (Chỉ hiển thị sách còn trong kho)"
+              optionFilterProp="children"
+              filterOption={(input, option) => {
+                const label = Array.isArray(option.children)
+                  ? option.children.join('')
+                  : option.children || '';
+                return label.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
               style={{ width: '100%', borderRadius: 6 }}
             >
               {booksList.map(book => (
