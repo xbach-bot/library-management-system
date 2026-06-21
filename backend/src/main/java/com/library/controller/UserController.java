@@ -58,13 +58,38 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@RequestBody User user, @AuthenticationPrincipal UserDetails currentUserDetails) {
+        User currentUser = userService.getUserByEmail(currentUserDetails.getUsername());
+        
+        // Nếu người tạo là LIBRARIAN, chỉ cho phép tạo tài khoản có vai trò READER
+        if (currentUser.getRole() == Role.LIBRARIAN && user.getRole() != Role.READER) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Thủ thư (Librarian) chỉ được phép tạo tài khoản Độc giả (Reader)!"));
+        }
+        
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user, @AuthenticationPrincipal UserDetails currentUserDetails) {
+        User currentUser = userService.getUserByEmail(currentUserDetails.getUsername());
+        User existingUser = userService.getUserById(id);
+        
+        // Nếu người sửa là LIBRARIAN
+        if (currentUser.getRole() == Role.LIBRARIAN) {
+            // 1. Không cho phép sửa thông tin của ADMIN hoặc LIBRARIAN khác
+            if (existingUser.getRole() == Role.ADMIN || existingUser.getRole() == Role.LIBRARIAN) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Thủ thư không được phép sửa tài khoản của Admin hoặc Thủ thư khác!"));
+            }
+            // 2. Không cho phép thay đổi vai trò thành ADMIN hoặc LIBRARIAN
+            if (user.getRole() != Role.READER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Thủ thư chỉ được phép thiết lập vai trò Độc giả (Reader)!"));
+            }
+        }
+        
         return ResponseEntity.ok(userService.updateUser(id, user));
     }
 

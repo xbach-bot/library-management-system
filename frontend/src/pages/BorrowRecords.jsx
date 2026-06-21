@@ -219,11 +219,14 @@ const BorrowRecords = () => {
       render: (_, record) => (
         record.status !== 'RETURNED' ? (
           <Button
-            type="primary"
-            ghost
             icon={<CheckCircleOutlined />}
             onClick={() => handleReturnBook(record.id)}
-            style={{ borderRadius: 6 }}
+            style={{ 
+              borderRadius: 6,
+              backgroundColor: 'var(--success-color)',
+              borderColor: 'var(--success-color)',
+              color: '#ffffff'
+            }}
           >
             Trả sách
           </Button>

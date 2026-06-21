@@ -83,6 +83,9 @@ const Users = () => {
   const handleAddClick = () => {
     setEditingId(null);
     form.resetFields();
+    if (!isOnlyAdmin) {
+      form.setFieldsValue({ role: 'READER' });
+    }
     setIsModalOpen(true);
   };
 
@@ -178,7 +181,9 @@ const Users = () => {
             onClick={() => handleHistoryClick(record)}
             title="Lịch sử mượn sách"
           />
-          <Button type="text" icon={<EditOutlined style={{ color: 'var(--primary-color)' }} />} onClick={() => handleEditClick(record)} />
+          {(isOnlyAdmin || (currentUser && currentUser.role === 'LIBRARIAN' && record.role === 'READER')) && (
+            <Button type="text" icon={<EditOutlined style={{ color: 'var(--primary-color)' }} />} onClick={() => handleEditClick(record)} />
+          )}
           {isOnlyAdmin && (
             <Popconfirm
               title="Bạn chắc chắn muốn xóa tài khoản này?"
@@ -353,7 +358,7 @@ const Users = () => {
             label="Vai trò"
             rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
           >
-            <Select placeholder="Chọn vai trò" style={{ borderRadius: 6 }}>
+            <Select placeholder="Chọn vai trò" style={{ borderRadius: 6 }} disabled={!isOnlyAdmin}>
               <Option value="READER">Độc giả (Reader)</Option>
               <Option value="LIBRARIAN">Thủ thư (Librarian)</Option>
               <Option value="ADMIN">Quản trị viên (Admin)</Option>

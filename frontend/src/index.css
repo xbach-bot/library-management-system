@@ -148,11 +148,11 @@ body {
   box-shadow: none !important;
 }
 
-.ant-btn-primary {
+.ant-btn-primary:not(.ant-btn-background-ghost) {
   background-color: var(--primary-color) !important;
 }
 
-.ant-btn-primary:hover {
+.ant-btn-primary:not(.ant-btn-background-ghost):hover {
   background-color: var(--primary-hover) !important;
 }
 
