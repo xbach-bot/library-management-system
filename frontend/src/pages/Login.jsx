@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaSwatchbook } from 'react-icons/fa6';
 import { Card, Form, Input, Button, Typography, Alert, message, Layout } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
@@ -37,7 +38,10 @@ const Login = () => {
       <div style={{ width: '100%', maxWidth: 420, padding: '0 16px' }}>
         <Card className="glass-card hover-scale" style={{ borderRadius: 16, border: '1px solid var(--border-color)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' }}>
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <Title level={2} style={{ color: 'var(--text-title)', margin: 0 }}>📚 Thư Viện</Title>
+            <Title level={2} style={{ color: 'var(--text-title)', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <FaSwatchbook style={{ color: '#3b82f6' }} />
+              <span>Thư Viện</span>
+            </Title>
             <Text style={{ color: 'var(--text-secondary)' }}>Đăng nhập để quản lý tài khoản & mượn sách</Text>
           </div>
 
