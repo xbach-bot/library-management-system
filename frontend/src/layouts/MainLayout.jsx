@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSwatchbook } from 'react-icons/fa6';
-import { Layout, Menu, Button, Avatar, Dropdown, Space, Typography, Tag } from 'antd';
+import { Layout, Menu, Button, Avatar, Dropdown, Space, Typography, Tag, Popover, Badge, List } from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -10,10 +10,12 @@ import {
   UserOutlined,
   HistoryOutlined,
   LogoutOutlined,
-  ProfileOutlined
+  ProfileOutlined,
+  BellOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import apiClient from '../services/api';
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -23,6 +25,27 @@ const MainLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // State thông báo
+  const [notifications, setNotifications] = useState([]);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await apiClient.get('/users/notifications');
+      setNotifications(response.data);
+    } catch (error) {
+      console.error('Không thể tải thông báo:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      // Tự động làm mới thông báo mỗi 30 giây (polling)
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
   const handleMenuClick = ({ key }) => {
     if (key === 'logout') {
@@ -115,6 +138,40 @@ const MainLayout = () => {
     },
   ];
 
+  const notificationContent = (
+    <div style={{ width: 320 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: 8, marginBottom: 8 }}>
+        <Text strong>Thông báo cá nhân</Text>
+        {notifications.length > 0 && (
+          <Button type="link" size="small" onClick={() => setNotifications([])} style={{ padding: 0 }}>
+            Xóa hiển thị
+          </Button>
+        )}
+      </div>
+      <List
+        itemLayout="horizontal"
+        dataSource={notifications}
+        locale={{ emptyText: 'Bạn không có thông báo nào.' }}
+        renderItem={item => (
+          <List.Item style={{ padding: '8px 0' }}>
+            <List.Item.Meta
+              title={<Text strong style={{ fontSize: 13 }}>{item.title}</Text>}
+              description={
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--text-paragraph)', whiteSpace: 'normal', wordBreak: 'break-word' }}>{item.content}</div>
+                  <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginTop: 4 }}>
+                    {new Date(item.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              }
+            />
+          </List.Item>
+        )}
+        style={{ maxHeight: 300, overflowY: 'auto' }}
+      />
+    </div>
+  );
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider trigger={null} collapsible collapsed={collapsed} breakpoint="lg" onCollapse={(value) => setCollapsed(value)}>
@@ -148,6 +205,23 @@ const MainLayout = () => {
             style={{ fontSize: '16px', width: 64, height: 64, color: 'var(--text-title)' }}
           />
           <Space size="large">
+            {user && (
+              <Popover
+                content={notificationContent}
+                title={null}
+                trigger="click"
+                placement="bottomRight"
+                overlayClassName="notification-popover"
+              >
+                <Badge count={notifications.length} size="small" offset={[-2, 4]}>
+                  <Button
+                    type="text"
+                    icon={<BellOutlined style={{ fontSize: 20, color: 'var(--text-title)' }} />}
+                    style={{ width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}
+                  />
+                </Badge>
+              </Popover>
+            )}
             {user && (
               <Dropdown menu={{ items: userDropdownItems, onClick: handleMenuClick }} placement="bottomRight" arrow>
                 <Space style={{ cursor: 'pointer' }}>
