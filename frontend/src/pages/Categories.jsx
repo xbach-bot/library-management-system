@@ -9,7 +9,7 @@ const { TextArea } = Input;
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+
   // State Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
@@ -114,10 +114,7 @@ const Categories = () => {
     <div>
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <Col>
-          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>📂 Quản Lý Thể Loại Sách</Title>
-          <Paragraph style={{ color: 'var(--text-secondary)', margin: 0 }}>
-            Phân loại sách giúp độc giả dễ dàng tìm kiếm và hệ thống khoa học hơn.
-          </Paragraph>
+          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>Quản Lý Thể Loại Sách</Title>
         </Col>
         <Col>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleAddClick} size="large" style={{ borderRadius: 8 }}>

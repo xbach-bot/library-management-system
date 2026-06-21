@@ -161,7 +161,7 @@ const MainLayout = () => {
           <Outlet />
         </Content>
         <Footer style={{ textAlign: 'center', color: 'var(--text-secondary)', background: 'transparent', padding: '16px 0' }}>
-          Library Management System ©{new Date().getFullYear()} - 2026
+          Library Management System ©{new Date().getFullYear()} - HXB
         </Footer>
       </Layout>
     </Layout>

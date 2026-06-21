@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Table, Card, Button, Input, Select, Space, Row, Col, Modal, Form, 
-  InputNumber, Upload, message, Popconfirm, Tag, Typography, Badge, Image 
+import {
+  Table, Card, Button, Input, Select, Space, Row, Col, Modal, Form,
+  InputNumber, Upload, message, Popconfirm, Tag, Typography, Badge, Image
 } from 'antd';
-import { 
-  PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, 
-  UploadOutlined, BookOutlined, UserOutlined, FileTextOutlined 
+import {
+  PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined,
+  UploadOutlined, BookOutlined, UserOutlined, FileTextOutlined
 } from '@ant-design/icons';
 import apiClient from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -123,7 +123,7 @@ const Books = () => {
       status: 'done',
       url: record.coverImage,
     }] : []);
-    
+
     form.setFieldsValue({
       title: record.title,
       author: record.author,
@@ -252,10 +252,7 @@ const Books = () => {
     <div>
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <Col>
-          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>📚 Quản Lý Sách Thư Viện</Title>
-          <Paragraph style={{ color: 'var(--text-secondary)', margin: 0 }}>
-            {isAdminOrLibrarian ? 'Thêm mới, cập nhật thông tin và quản lý sách trong thư viện.' : 'Tìm kiếm và khám phá kho sách đa dạng của thư viện.'}
-          </Paragraph>
+          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>Quản Lý Sách Thư Viện</Title>
         </Col>
         {isAdminOrLibrarian && (
           <Col>

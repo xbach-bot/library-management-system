@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Table, Card, Button, Select, Space, Row, Col, Modal, Form, 
-  message, Tag, Typography, Badge, InputNumber 
+import {
+  Table, Card, Button, Select, Space, Row, Col, Modal, Form,
+  message, Tag, Typography, Badge, InputNumber
 } from 'antd';
-import { 
-  PlusOutlined, SearchOutlined, CheckCircleOutlined, 
-  HistoryOutlined, BookOutlined, UserOutlined 
+import {
+  PlusOutlined, SearchOutlined, CheckCircleOutlined,
+  HistoryOutlined, BookOutlined, UserOutlined
 } from '@ant-design/icons';
 import apiClient from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -218,10 +218,10 @@ const BorrowRecords = () => {
       width: 120,
       render: (_, record) => (
         record.status !== 'RETURNED' ? (
-          <Button 
-            type="primary" 
-            ghost 
-            icon={<CheckCircleOutlined />} 
+          <Button
+            type="primary"
+            ghost
+            icon={<CheckCircleOutlined />}
             onClick={() => handleReturnBook(record.id)}
             style={{ borderRadius: 6 }}
           >
@@ -236,10 +236,7 @@ const BorrowRecords = () => {
     <div>
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <Col>
-          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>📊 {isAdminOrLibrarian ? 'Quản Lý Phiếu Mượn Trả Sách' : 'Lịch Sử Mượn Trả Sách'}</Title>
-          <Paragraph style={{ color: 'var(--text-secondary)', margin: 0 }}>
-            {isAdminOrLibrarian ? 'Theo dõi thời hạn, tạo mới phiếu mượn và phê duyệt trả sách cho độc giả.' : 'Xem danh sách sách đã mượn và kiểm soát thời hạn hoàn trả.'}
-          </Paragraph>
+          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}> {isAdminOrLibrarian ? 'Quản Lý Phiếu Mượn Trả Sách' : 'Lịch Sử Mượn Trả Sách'}</Title>
         </Col>
         {isAdminOrLibrarian && (
           <Col>

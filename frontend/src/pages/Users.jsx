@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Table, Card, Button, Input, Select, Space, Row, Col, Modal, Form, 
-  message, Popconfirm, Tag, Typography, Drawer, Badge 
+import {
+  Table, Card, Button, Input, Select, Space, Row, Col, Modal, Form,
+  message, Popconfirm, Tag, Typography, Drawer, Badge
 } from 'antd';
-import { 
-  PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, 
-  HistoryOutlined, UserOutlined, MailOutlined 
+import {
+  PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined,
+  HistoryOutlined, UserOutlined, MailOutlined
 } from '@ant-design/icons';
 import apiClient from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -172,10 +172,10 @@ const Users = () => {
       width: 200,
       render: (_, record) => (
         <Space size="middle">
-          <Button 
-            type="text" 
-            icon={<HistoryOutlined style={{ color: 'var(--success-color)' }} />} 
-            onClick={() => handleHistoryClick(record)} 
+          <Button
+            type="text"
+            icon={<HistoryOutlined style={{ color: 'var(--success-color)' }} />}
+            onClick={() => handleHistoryClick(record)}
             title="Lịch sử mượn sách"
           />
           <Button type="text" icon={<EditOutlined style={{ color: 'var(--primary-color)' }} />} onClick={() => handleEditClick(record)} />
@@ -247,10 +247,7 @@ const Users = () => {
     <div>
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <Col>
-          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>👥 Quản Lý Người Dùng & Độc Giả</Title>
-          <Paragraph style={{ color: 'var(--text-secondary)', margin: 0 }}>
-            Quản lý độc giả thư viện, phân quyền và kiểm tra lịch sử mượn trả sách.
-          </Paragraph>
+          <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>Quản Lý Người Dùng & Độc Giả</Title>
         </Col>
         <Col>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleAddClick} size="large" style={{ borderRadius: 8 }}>

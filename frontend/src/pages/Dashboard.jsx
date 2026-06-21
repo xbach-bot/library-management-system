@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Table, Typography, Space, message, Badge } from 'antd';
-import { 
-  BookOutlined, UserOutlined, HistoryOutlined, 
-  WarningOutlined, TrophyOutlined, AreaChartOutlined 
+import {
+  BookOutlined, UserOutlined, HistoryOutlined,
+  WarningOutlined, TrophyOutlined, AreaChartOutlined
 } from '@ant-design/icons';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import apiClient from '../services/api';
@@ -70,10 +70,7 @@ const Dashboard = () => {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>📊 Dashboard Thống Kê</Title>
-        <Paragraph style={{ color: 'var(--text-secondary)', margin: 0 }}>
-          Xem tổng quan số liệu hoạt động, xu hướng mượn sách và những sách được yêu thích nhất.
-        </Paragraph>
+        <Title level={3} style={{ color: 'var(--text-title)', margin: 0 }}>Dashboard Thống Kê</Title>
       </div>
 
       {/* 4 Cards Số Liệu */}
@@ -123,9 +120,9 @@ const Dashboard = () => {
       <Row gutter={[16, 16]}>
         {/* Biểu đồ số lượt mượn */}
         <Col xs={24} lg={14}>
-          <Card 
-            className="glass-card" 
-            style={cardStyle} 
+          <Card
+            className="glass-card"
+            style={cardStyle}
             title={<span style={{ color: 'var(--text-title)' }}><AreaChartOutlined /> Lượt mượn sách theo tháng</span>}
             loading={loading}
           >
@@ -138,14 +135,14 @@ const Dashboard = () => {
                   >
                     <defs>
                       <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="var(--primary-color)" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="var(--primary-color)" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="var(--primary-color)" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="var(--primary-color)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                     <XAxis dataKey="label" stroke="var(--text-secondary)" fontSize={12} />
                     <YAxis stroke="var(--text-secondary)" fontSize={12} allowDecimals={false} />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: 'var(--surface-card)', border: '1px solid var(--border-color)', borderRadius: 8 }}
                       labelStyle={{ color: 'var(--text-title)' }}
                       itemStyle={{ color: 'var(--primary-color)' }}
@@ -165,9 +162,9 @@ const Dashboard = () => {
 
         {/* Top 10 sách mượn nhiều nhất */}
         <Col xs={24} lg={10}>
-          <Card 
-            className="glass-card" 
-            style={cardStyle} 
+          <Card
+            className="glass-card"
+            style={cardStyle}
             title={<span style={{ color: 'var(--text-title)' }}><TrophyOutlined style={{ color: '#eab308' }} /> Top 10 sách mượn nhiều nhất</span>}
             loading={loading}
           >
