@@ -55,7 +55,7 @@ const Books = () => {
   }, []);
 
   // Lấy danh sách sách có tìm kiếm, lọc, phân trang
-  const fetchBooks = useCallback(async (page = currentPage, size = pageSize, kw = keyword, catId = selectedCategory) => {
+  const fetchBooks = useCallback(async (page = 1, size = 10, kw = '', catId = null) => {
     setLoading(true);
     try {
       const response = await apiClient.get('/books', {
@@ -75,7 +75,7 @@ const Books = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, pageSize, keyword, selectedCategory]);
+  }, []);
 
   useEffect(() => {
     fetchCategories();
@@ -94,6 +94,13 @@ const Books = () => {
     setSelectedCategory(null);
     setCurrentPage(1);
     fetchBooks(1, pageSize, '', null);
+  };
+
+  // Xử lý Lọc theo thể loại
+  const handleCategoryChange = (catId) => {
+    setSelectedCategory(catId);
+    setCurrentPage(1);
+    fetchBooks(1, pageSize, keyword, catId);
   };
 
   // Thay đổi phân trang
@@ -150,7 +157,7 @@ const Books = () => {
     try {
       await apiClient.delete(`/books/${id}`);
       message.success('Xóa sách thành công!');
-      fetchBooks();
+      fetchBooks(currentPage, pageSize, keyword, selectedCategory);
     } catch (error) {
       message.error(error.response?.data?.message || 'Xóa sách thất bại!');
     }
@@ -172,7 +179,7 @@ const Books = () => {
         message.success('Thêm sách mới thành công!');
       }
       setIsModalOpen(false);
-      fetchBooks();
+      fetchBooks(currentPage, pageSize, keyword, selectedCategory);
     } catch (error) {
       message.error(error.response?.data?.message || 'Thao tác thất bại!');
     }
@@ -289,7 +296,7 @@ const Books = () => {
             <Select
               placeholder="Lọc theo thể loại"
               value={selectedCategory}
-              onChange={setSelectedCategory}
+              onChange={handleCategoryChange}
               style={{ width: '100%', borderRadius: 8 }}
               allowClear
             >
