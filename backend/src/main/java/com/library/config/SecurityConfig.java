@@ -63,6 +63,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Cho phép truy cập công khai các API authentication và xem sách/thể loại công khai
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/ping").permitAll()
                 .requestMatchers(HttpMethod.GET, "/books/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
                 // Yêu cầu xác thực với tất cả các request khác
