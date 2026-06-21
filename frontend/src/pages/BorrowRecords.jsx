@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Table, Card, Button, Select, Space, Row, Col, Modal, Form,
+  Table, Card, Button, Input, Select, Space, Row, Col, Modal, Form,
   message, Tag, Typography, Badge, InputNumber
 } from 'antd';
 import {
@@ -34,7 +34,7 @@ const BorrowRecords = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
 
   // Lấy danh sách phiếu mượn (nếu là Admin/Librarian thì lấy tất cả, Reader chỉ lấy lịch sử cá nhân)
-  const fetchRecords = useCallback(async (page = currentPage, size = pageSize, kw = keyword, status = statusFilter) => {
+  const fetchRecords = useCallback(async (page = 1, size = 10, kw = '', status = null) => {
     setLoading(true);
     try {
       let response;
@@ -67,7 +67,7 @@ const BorrowRecords = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, pageSize, keyword, statusFilter, isAdminOrLibrarian]);
+  }, [isAdminOrLibrarian]);
 
   useEffect(() => {
     fetchRecords();
@@ -106,6 +106,13 @@ const BorrowRecords = () => {
     fetchRecords(1, pageSize, '', null);
   };
 
+  // Xử lý Lọc theo trạng thái
+  const handleStatusFilterChange = (status) => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+    fetchRecords(1, pageSize, keyword, status);
+  };
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
     setPageSize(pagination.pageSize);
@@ -117,7 +124,7 @@ const BorrowRecords = () => {
     try {
       await apiClient.post(`/borrow/${recordId}/return`);
       message.success(`Đã xác nhận trả sách cho phiếu mượn #${recordId} thành công!`);
-      fetchRecords();
+      fetchRecords(currentPage, pageSize, keyword, statusFilter);
     } catch (error) {
       message.error(error.response?.data?.message || 'Thao tác thất bại!');
     }
@@ -128,7 +135,7 @@ const BorrowRecords = () => {
     try {
       await apiClient.post(`/borrow/${recordId}/request-extension`);
       message.success('Đã gửi yêu cầu gia hạn sách thành công! Đang chờ thủ thư phê duyệt.');
-      fetchRecords();
+      fetchRecords(currentPage, pageSize, keyword, statusFilter);
     } catch (error) {
       message.error(error.response?.data?.message || 'Yêu cầu gia hạn thất bại!');
     }
@@ -139,7 +146,7 @@ const BorrowRecords = () => {
     try {
       await apiClient.post(`/borrow/${recordId}/approve-extension`);
       message.success('Đã duyệt gia hạn phiếu mượn thêm 7 ngày thành công!');
-      fetchRecords();
+      fetchRecords(currentPage, pageSize, keyword, statusFilter);
     } catch (error) {
       message.error(error.response?.data?.message || 'Thao tác thất bại!');
     }
@@ -150,7 +157,7 @@ const BorrowRecords = () => {
     try {
       await apiClient.post(`/borrow/${recordId}/reject-extension`);
       message.success('Đã từ chối yêu cầu gia hạn sách.');
-      fetchRecords();
+      fetchRecords(currentPage, pageSize, keyword, statusFilter);
     } catch (error) {
       message.error(error.response?.data?.message || 'Thao tác thất bại!');
     }
@@ -163,7 +170,7 @@ const BorrowRecords = () => {
       await apiClient.post('/borrow', values);
       message.success('Tạo phiếu mượn sách thành công!');
       setIsModalOpen(false);
-      fetchRecords();
+      fetchRecords(currentPage, pageSize, keyword, statusFilter);
     } catch (error) {
       message.error(error.response?.data?.message || 'Tạo phiếu mượn thất bại!');
     } finally {
@@ -347,10 +354,20 @@ const BorrowRecords = () => {
         <Card style={{ marginBottom: 24, borderRadius: 12 }} className="glass-card">
           <Row gutter={16} align="middle">
             <Col xs={24} sm={10} md={8}>
+              <Input
+                placeholder="Tìm theo tên độc giả, email..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onPressEnter={handleSearch}
+                prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
+                style={{ borderRadius: 8 }}
+              />
+            </Col>
+            <Col xs={24} sm={8} md={6}>
               <Select
                 placeholder="Lọc theo trạng thái phiếu"
                 value={statusFilter}
-                onChange={setStatusFilter}
+                onChange={handleStatusFilterChange}
                 style={{ width: '100%', borderRadius: 8 }}
                 allowClear
               >
@@ -359,7 +376,7 @@ const BorrowRecords = () => {
                 <Option value="OVERDUE">Quá hạn (Overdue)</Option>
               </Select>
             </Col>
-            <Col xs={24} sm={8} md={8}>
+            <Col xs={24} sm={6} md={6}>
               <Space>
                 <Button type="primary" onClick={handleSearch} style={{ borderRadius: 8 }}>Tìm kiếm</Button>
                 <Button onClick={handleReset} style={{ borderRadius: 8 }}>Làm mới</Button>
